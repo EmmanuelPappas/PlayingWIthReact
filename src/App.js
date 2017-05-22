@@ -1,5 +1,5 @@
-import React from 'react';
-
+ import React from 'react';
+ import ReactDOM from 'react-dom';
 // --1--
 // Class component -- can have state!!
 /*class App extends React.Component {
@@ -200,19 +200,66 @@ class Input extends React.Component {
 // and when our component is removed from the DOM, this is called unmounting. 
 // There are a handful of lifecycle methods we can access at various stages of this state.
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = { val: 0 }
-    this.update = this.update.bind(this)
-  }
-  update() {
-    this.setState({ val: this.state.val + 1 })
-  }
+// class App extends React.Component {
+//   constructor() {
+//     super();
+//     this.state = { val: 0 }
+//     this.update = this.update.bind(this)
+//   }
+//   update() {
+//     this.setState({ val: this.state.val + 1 })
+//   }
+//   componentWillMount() {
+//       console.log('componentWillMount')
+//       this.setState({m:2})
+//   }
+//   render() {
+//       console.log('render');
+//       return <button onClick={this.update}>
+//           {this.state.val * this.state.m}
+//       </button>
+//   }
+//   componentDidMount(){
+//     console.log('componentDidMount')
+//       this.inc = setInterval(this.update,500)
+//   }
+//   conponentWillUnoumt(){
+//     console.log('componentWillUnmount')
+//       clearInterval(this.inc)
+//   }
+// }
 
-  render() {
-    console.log('render');
-    return <button onClick={this.update}>{this.state.val}</button>
-  }
-}
-export default App
+
+ // Updating lifecycle methods that are available to us in components
+
+ class App extends React.Component {
+   constructor(){
+       super();
+       this.state = {increasing: false}
+   }
+   update(){
+       ReactDOM.render(
+           <App val={this.props.val + 1}/>, document.getElementById('root'))
+   }
+   componentWillReceiveProps(nextProps){
+     this.setState({increasing: nextProps.val > this.props.val})
+   }
+   shouldComponentUpdate(nextProps, nextState) {
+     return nextProps.val % 5 === 0;
+   }
+   render(){
+     console.log(this.state.increasing)
+       return (
+           <button onClick={this.update.bind(this)}>
+               {this.props.val}
+           </button>
+       )
+     }
+   componentDidUpdate(prevProps, prevState) {
+     console.log(`prevProps: ${prevProps.val}`)
+   }
+ }
+
+ App.defaultProps = {val: 0}
+
+ export default App
